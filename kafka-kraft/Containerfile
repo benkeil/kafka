@@ -1,4 +1,3 @@
-# FROM --platform=arm64 openjdk:11
 FROM --platform=arm64 adoptopenjdk:11-jre-hotspot
 
 LABEL maintainer=benkeil.me@googlemail.com
