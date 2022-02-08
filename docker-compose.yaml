@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  broker:
+    image: benkeil/kafka-kraft
+    hostname: broker
+    container_name: broker
+    ports:
+      - 9092:9092

@@ -1,0 +1,20 @@
+# https://k8s-examples.container-solutions.com/examples/Pod/Pod.html
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kafka
+  labels:
+    name: kafka
+spec:
+  containers:
+    - name: broker
+      image: kafka-kraft
+      # resources:
+      #   limits:
+      #     memory: "2Gi"
+      #     cpu: "500m"
+      ports:
+        - containerPort: 9092
+      env:
+        - name: KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL
+          value: http://schema-registry:8081

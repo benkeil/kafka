@@ -1,0 +1,27 @@
+# FROM --platform=arm64 openjdk:11
+FROM --platform=arm64 adoptopenjdk:11-jre-hotspot
+
+LABEL maintainer=benkeil.me@googlemail.com
+LABEL name=benkeil/kafka
+LABEL version=0.1.0
+
+ARG kafka_version=3.0.0
+ARG scala_version=2.13
+
+ENV KAFKA_VERSION=${kafka_version}
+ENV SCALA_VERSION=${scala_version}
+ENV KAFKA_HOME=/opt/kafka
+
+ARG kafka_url=https://dlcdn.apache.org/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
+ENV KAFKA_URL=${kafka_url}
+
+RUN apt-get update && apt-get install -y wget
+RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz ${KAFKA_URL} \
+	&& tar xvf /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt \
+	&& rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
+	&& ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME} \
+	&& rm -rf /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
+
+ENV PATH $PATH:/opt/kafka/bin
+
+CMD kafka-storage.sh format -t $(kafka-storage.sh random-uuid) -c /opt/kafka/config/kraft/server.properties; kafka-server-start.sh /opt/kafka/config/kraft/server.properties
